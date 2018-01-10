@@ -2,3 +2,4 @@ cropped_augmented_images/
 models/
 __pycache__/
 flickr_logos_27_dataset/
+deep_logo.pickle
