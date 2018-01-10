@@ -113,6 +113,7 @@ def main():
 
     # Logo recognition
     results = []
+    print(len(object_proposals))
     for obj_proposal in object_proposals:
         x, y, w, h = obj_proposal
         crop_image = target_image[y:y + h, x:x + w]

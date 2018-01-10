@@ -34,10 +34,10 @@ PIXEL_DEPTH = 255.0
 PICKLE_FILENAME = 'deep_logo.pickle'
 
 #TRAIN_SIZE = 70000
-TRAIN_SIZE = 2500
-VALID_SIZE = 5000
+TRAIN_SIZE = 13000
+VALID_SIZE = 50
 #TEST_SIZE = 5000
-TEST_SIZE = 1000
+TEST_SIZE = 820
 
 
 def load_logo(data_dir):
@@ -130,6 +130,9 @@ def merge_datasets(pickle_files, train_size, valid_size=0):
                     valid_labels[start_v:end_v] = label
                     start_v += vsize_per_class
                     end_v += vsize_per_class
+                print("end_l", end_l)
+                print("end_t", end_t)
+                print("tsize_per_class", tsize_per_class)
                 train_logo = logo_set[vsize_per_class:end_l, :, :, :]
                 train_dataset[start_t:end_t, :, :, :] = train_logo
                 train_labels[start_t:end_t] = label
