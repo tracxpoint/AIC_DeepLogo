@@ -34,6 +34,8 @@ import common
 import model
 import preprocess
 from scipy.misc import imresize
+from PIL import Image
+import skimage.io as io
 
 PIXEL_DEPTH = 255.0
 
@@ -84,16 +86,26 @@ def main():
             common.CNN_IN_HEIGHT, common.CNN_IN_WIDTH, common.CNN_IN_CH)
     else:
         test_image_org = skimage.io.imread(test_image_fn)
+
     if test_image_org.shape != (common.CNN_IN_HEIGHT, common.CNN_IN_WIDTH,
                                 common.CNN_IN_CH):
         test_image_org = imresize(
             test_image_org, (common.CNN_IN_HEIGHT, common.CNN_IN_WIDTH),
             interp='bicubic')
-    test_image_org = preprocess.scaling(test_image_org)
+
+    #test_image_org = preprocess.scaling(test_image_org)
+
+    print(test_image_org[20,40,:])
     test_image = test_image_org.reshape(
         (1, common.CNN_IN_HEIGHT, common.CNN_IN_WIDTH,
          common.CNN_IN_CH)).astype(np.float32)
-
+    print(test_image[0,20,40,:])
+    print(test_image[0].shape)
+    #io.imshow(test_image[0])
+    cv2.imwrite("./test.jpg",test_image[0])
+    #io.show()
+    #plt.imshow(test_image[0])
+    #plt.show()
     # Training model
     graph = tf.Graph()
     with graph.as_default():
@@ -103,8 +115,10 @@ def main():
         # restore weights
         f = "weights.npz"
         if os.path.exists(f):
+            print("weights exists")
             initial_weights = load_initial_weights(f)
         else:
+            print("weights is non")
             initial_weights = None
 
         if initial_weights is not None:
@@ -113,13 +127,15 @@ def main():
                 w.assign(v) for w, v in zip(model_params, initial_weights)
             ]
 
+        #print("test image",test_image)
         # A placeholder for a test image
         tf_test_image = tf.constant(test_image)
-
+        print(tf_test_image[0,20,40,:])
+        #print("tf test image",tf_test_image)
         # model
         logits = model.cnn(tf_test_image, model_params, keep_prob=1.0)
         test_pred = tf.nn.softmax(logits)
-
+        #print("test pred", test_pred)
         # Restore ops
         saver = tf.train.Saver()
 
@@ -135,7 +151,10 @@ def main():
             print('Model restored')
         else:
             print('initialized')
+
         pred = session.run([test_pred])
+        print("tes pred",test_pred)
+        print("pred",pred)
         print("Class name:", common.CLASS_NAME[np.argmax(pred)])
         print("Probability:", np.max(pred))
 

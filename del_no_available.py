@@ -7,10 +7,11 @@ import re
 import shutil
 import imagehash
 from PIL import Image
+import common
 
-TRAIN_DIR = 'flickr_logos_27_dataset'
-DISTRACT_IMAGE_DIR = os.path.join(TRAIN_DIR,
-                                  'flickr_logos_27_dataset_distractor_images')
+#TRAIN_DIR = 'flickr_logos_27_dataset'
+DISTRACT_IMAGE_DIR = os.path.join(common.TRAIN_DIR,
+                                  'retail_logos_25_dataset_distractor_images')
 NO_AVAILABLE_IMG = 'no_available.jpg'
 
 
