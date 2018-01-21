@@ -34,6 +34,7 @@ import common
 import model
 import preprocess
 from scipy.misc import imresize
+import argparse
 
 PIXEL_DEPTH = 255.0
 
@@ -48,6 +49,12 @@ tf.app.flags.DEFINE_integer("num_classes", 27, "Number of logo classes.")
 tf.app.flags.DEFINE_integer("patch_size", 5,
                             "A patch size of convolution filter")
 
+def parse_cmdline():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--image', help='image filename')
+    parser.add_argument('--model_path', nargs='?', help='model path')
+    parser.add_argument('--anno_fn', nargs='?', help='annotation filename')
+    return parser.parse_args()
 
 def load_initial_weights(fn):
     f = np.load(fn)
@@ -60,21 +67,26 @@ def load_initial_weights(fn):
 
 
 def main():
-    if len(sys.argv) > 1:
-        test_image_fn = sys.argv[1]
-        if not os.path.exists(test_image_fn):
-            print("Not found:", test_image_fn)
-            sys.exit(-1)
-    else:
-        # Select a test image from a test directory
-        test_dirs = [
-            os.path.join(common.CROPPED_AUG_IMAGE_DIR, class_name, 'test')
-            for class_name in common.CLASS_NAME
-        ]
-        test_dir = np.random.choice(test_dirs)
-        test_images_fn = [test_image for test_image in os.listdir(test_dir)]
-        test_image_fn = np.random.choice(test_images_fn, 1)[0]
-        test_image_fn = os.path.join(test_dir, test_image_fn)
+    args = parse_cmdline()
+    test_image_fn = os.path.abspath(args.image)
+    model_path = os.path.abspath(args.model_path)
+    if not os.path.exists(model_path):
+        model_path = "/home/hussam/mlmodels/DeepLogo/models/"
+    # if len(sys.argv) > 1:
+    #     test_image_fn = sys.argv[1]
+    #     if not os.path.exists(test_image_fn):
+    #         print("Not found:", test_image_fn)
+    #         sys.exit(-1)
+    # else:
+    #     # Select a test image from a test directory
+    #     test_dirs = [
+    #         os.path.join(common.CROPPED_AUG_IMAGE_DIR, class_name, 'test')
+    #         for class_name in common.CLASS_NAME
+    #     ]
+    #     test_dir = np.random.choice(test_dirs)
+    #     test_images_fn = [test_image for test_image in os.listdir(test_dir)]
+    #     test_image_fn = np.random.choice(test_images_fn, 1)[0]
+    #     test_image_fn = os.path.join(test_dir, test_image_fn)
     print("Test image:", test_image_fn)
 
     # Open and resize a test image
@@ -129,16 +141,22 @@ def main():
         if initial_weights is not None:
             session.run(assign_ops)
             print('initialized by pre-learned weights')
-        elif os.path.exists("models"):
-            save_path = "models/deep_logo_model"
+        elif os.path.exists(model_path):
+            save_path = os.path.join(model_path,'deep_logo_model')
             saver.restore(session, save_path)
             print('Model restored')
         else:
             print('initialized')
         pred = session.run([test_pred])
-        print("Class name:", common.CLASS_NAME[np.argmax(pred)])
-        print("Probability:", np.max(pred))
+
+        print("result, confidence")
+        class_name = common.CLASS_NAME[np.argmax(pred)]
+        prob =  np.max(pred)
+
+        print("{}, {}".format(class_name, prob))
+        # print("Class name:", common.CLASS_NAME[np.argmax(pred)])
+        # print("Probability:", np.max(pred))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
