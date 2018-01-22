@@ -148,8 +148,8 @@ def iou(obj_proposal, annot_rect):
     box2_area = (annot_rect[2] - annot_rect[0]) * (
         annot_rect[3] - annot_rect[1])
     union_area = box1_area + box2_area - inter_area
-
-    print(obj_proposal, annot_rect, box1_area, box2_area, union_area, inter_area)
+# 
+    # print(obj_proposal, annot_rect, box1_area, box2_area, union_area, inter_area)
     # Compute the IoU
     iou = inter_area / union_area
 

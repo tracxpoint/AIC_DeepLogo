@@ -80,7 +80,11 @@ def gen_annot_file_lines(img_instances_annot):
     if len(bg_proposals) == 0:
         return lines
 
-    randomNumbers = random.sample(range(len(bg_proposals)), len(img_instances_annot))
+    if len(bg_proposals) >= len(img_instances_annot):
+        randomNumbers = random.sample(range(len(bg_proposals)), len(img_instances_annot))
+    else:
+        # this introduces a slight class imbalance
+        randomNumbers = range(len(bg_proposals))
 
     for index, rndNum in enumerate(randomNumbers):
         annot = img_instances_annot[index]
@@ -115,6 +119,10 @@ def main():
     with ProcessPoolExecutor(n_workers) as executer, open(
             common.ANNOT_FILE_WITH_BG, 'w') as fw:
         for idx, annot in enumerate(annot_train):
+            # just for testing
+            if (idx > 50):
+                break
+
             img_fn, class_name, train_subset_class = util.parse_annot(annot)
 
             # new image

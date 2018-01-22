@@ -99,10 +99,10 @@ def resize_img(img, size=(common.CNN_IN_HEIGHT, common.CNN_IN_WIDTH)):
     return imresize(img, size, interp='bicubic')
 
 
-def make_affine_transform():
+def make_affine_transform(min_rot, max_rot):
     shift_w = int(np.ceil(np.random.rand() * MAX_SHIFT_WIDTH))
     shift_h = int(np.ceil(np.random.rand() * MAX_SHIFT_HEIGHT))
-    rot_deg = np.random.uniform(MIN_ROT_DEG, MAX_ROT_DEG)
+    rot_deg = np.random.uniform(min_rot, max_rot)
     rot_rad = rot_deg * np.pi / 180.0
     scale_rate = np.random.uniform(MIN_SCALE_RATE, MAX_SCALE_RATE)
     params = {}
@@ -178,8 +178,10 @@ def crop_and_aug_random(annot_train):
 
         # Data augmentation by affine transformation
         if class_name != common.CLASS_NAME[-1]:
+            rot_offset = 0
+            # for rot_offset in [0, 90, 180, 270]:
             while cnt_per_line[i] < MAX_DATA_AUG_PER_LINE:
-                affine_mat, params = make_affine_transform()
+                affine_mat, params = make_affine_transform(rot_offset + MIN_ROT_DEG, rot_offset + MAX_ROT_DEG)
                 transformed_img = sktf.warp(
                     cropped_img, affine_mat, mode='edge')
                 transformed_img = resize_img(transformed_img)
