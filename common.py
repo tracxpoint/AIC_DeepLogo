@@ -45,7 +45,7 @@ CLASS_NAME = [
     'hershey',
     'kelloggs',
     'kraft',
-    'milka', 
+    'milka',
     'millerhighlife',
     'nescafe',
     'nestle',
@@ -69,3 +69,10 @@ CROPPED_AUG_IMAGE_DIR = '../DeepLogo/cropped_augmented_images'
 ANNOT_FILE = os.path.join(
     TRAIN_DIR, 'training_data_flat.txt')
 ANNOT_FILE_WITH_BG = os.path.join(TRAIN_DIR, 'train_annot_with_bg_class.txt')
+
+BING_RESULTS_PATH = './bing/Result'
+BING_WEIGHTS_PATH = os.path.join(BING_RESULTS_PATH, 'weights.txt')
+BING_2nd_WEIGHTS_PATH = os.path.join(BING_RESULTS_PATH, '2nd_stage_weights.json')
+BING_SIZES_PATH = os.path.join(BING_RESULTS_PATH, 'sizes.txt')
+num_win_psz = 180
+num_bbs = 2000

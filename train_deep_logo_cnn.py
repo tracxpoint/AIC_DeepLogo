@@ -31,10 +31,11 @@ import sys
 import os
 import common
 import model
+from absl import flags
 
-FLAGS = tf.app.flags.FLAGS
+# FLAGS = tf.app.flags.FLAGS
 
-FLAGS(sys.argv)
+# FLAGS(sys.argv)
 
 tf.app.flags.DEFINE_string(
     "train_dir", "flickr_logos_27_dataset",
@@ -198,4 +199,7 @@ def main():
 
 
 if __name__ == '__main__':
+
+    FLAGS = flags.FLAGS
+    FLAGS(sys.argv)
     main()

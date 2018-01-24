@@ -1,0 +1,13 @@
+{
+	"basepath": "/home/hussam/mldatasets/Weblogo-2m",
+	"training_set_fn": "/opt/Datasets/VOC2007/ImageSets/Main/train.txt",
+	"test_set_fn": "/opt/Datasets/VOC2007/ImageSets/Main/test.txt",
+	"annotations_path": "/opt/Datasets/VOC2007/Annotations",
+	"images_path": "/opt/Datasets/VOC2007/JPEGImages",
+	"results_dir": "./bing/Result",
+    "1st_stage_weights_fn":"./bing/Result/weights.txt",
+    "2nd_stage_weights_fn": "./bing/Result/2nd_stage_weights.json",
+    "sizes_indeces_fn": "./bing/Result/sizes.txt",
+	"num_win_psz": 180,
+	"num_bbs":2000
+}

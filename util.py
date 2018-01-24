@@ -27,7 +27,7 @@ import numpy as np
 import selectivesearch
 import common
 import skimage.io
-
+from bing import bing
 
 def parse_annot(annot):
     fn = annot[0].decode('utf-8')
@@ -64,6 +64,42 @@ def get_object_proposals(img, scale=500, sigma=0.9, min_size=10):
 
     return candidates
 
+def get_bing_object_proposals(img):
+    if not os.path.exists(common.BING_RESULTS_PATH):
+        print ("The results directory that should contains weights and sizes indeces does not exist. Be sure to have already performed training. ")
+        sys.exit(2)
+
+    if not os.path.exists(common.BING_WEIGHTS_PATH):
+        print ("The weights for the first stage does not exist!")
+        sys.exit(2)
+    w_1st = np.genfromtxt(common.BING_WEIGHTS_PATH, delimiter=",").astype(np.float32)
+
+    if not os.path.exists(common.BING_SIZES_PATH):
+        print ("The sizes indices file does not exist!")
+        sys.exit(2)
+    sizes = np.genfromtxt(common.BING_SIZES_PATH, delimiter=",").astype(np.int32)
+
+    if not os.path.exists(common.BING_2nd_WEIGHTS_PATH):
+        print ("The weights for the second stage does not exist!")
+        sys.exit(2)
+    f = open(common.BING_2nd_WEIGHTS_PATH)
+    w_str = f.read()
+    f.close()
+    w_2nd = json.loads(w_str)
+
+    b = Bing(w_1st,sizes,w_2nd, num_bbs_per_size_1st_stage= common.num_win_psz, num_bbs_final = common.num_bbs)
+    bbs, scores = b.predict(image)
+
+    candidates = set()
+    for bb in bbs:
+        x1 = bb[0]
+        y1 = bb[1]
+        w = bb[2] - x1
+        h = bb[3] - y1
+        rect = (x1, y1, w, h)
+        candidates.add(rect)
+        # cv2.rectangle(image,(bb[0],bb[1]),(bb[2],bb[3]),color=(random.randint(0,255),random.randint(0,255),random.randint(0,255)))
+    return candidates
 
 def load_target_image(img_fn):
     if common.CNN_IN_CH == 1:
@@ -148,7 +184,7 @@ def iou(obj_proposal, annot_rect):
     box2_area = (annot_rect[2] - annot_rect[0]) * (
         annot_rect[3] - annot_rect[1])
     union_area = box1_area + box2_area - inter_area
-# 
+#
     # print(obj_proposal, annot_rect, box1_area, box2_area, union_area, inter_area)
     # Compute the IoU
     iou = inter_area / union_area

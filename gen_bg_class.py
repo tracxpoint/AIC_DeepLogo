@@ -120,8 +120,8 @@ def main():
             common.ANNOT_FILE_WITH_BG, 'w') as fw:
         for idx, annot in enumerate(annot_train):
             # just for testing
-            if (idx > 50):
-                break
+            # if (idx > 50):
+            #     break
 
             img_fn, class_name, train_subset_class = util.parse_annot(annot)
 
