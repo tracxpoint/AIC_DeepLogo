@@ -36,8 +36,9 @@ from skimage import transform as sktf
 from scipy.misc import imresize
 import warnings
 import cv2
+import imutils
 
-MAX_DATA_AUG_PER_LINE = 30
+MAX_DATA_AUG_PER_LINE = 120
 MAX_SHIFT_WIDTH = common.CNN_IN_WIDTH * 0.1
 MAX_SHIFT_HEIGHT = common.CNN_IN_HEIGHT * 0.1
 MAX_ROT_DEG = 10
@@ -114,7 +115,7 @@ def make_affine_transform(min_rot, max_rot):
 
     mat = sktf.AffineTransform(
         translation=(shift_w, shift_h),
-        rotation=rot_rad,
+        #rotation=rot_rad,
         scale=(scale_rate, scale_rate))
 
     return mat, params
@@ -140,6 +141,7 @@ def save_transformed_imgs(imgs, annot, aug_params, line_no):
             'scale' + format(aug_params[i]['scale_rate'], '.2f')
         ]) + ext
         skimage.io.imsave(os.path.join(dst_dir, save_fn), img)
+        print(save_fn)
 
 
 def crop_and_aug_random(annot_train):
@@ -178,16 +180,20 @@ def crop_and_aug_random(annot_train):
 
         # Data augmentation by affine transformation
         if class_name != common.CLASS_NAME[-1]:
-            rot_offset = 0
-            # for rot_offset in [0, 90, 180, 270]:
-            while cnt_per_line[i] < MAX_DATA_AUG_PER_LINE:
-                affine_mat, params = make_affine_transform(rot_offset + MIN_ROT_DEG, rot_offset + MAX_ROT_DEG)
-                transformed_img = sktf.warp(
-                    cropped_img, affine_mat, mode='edge')
-                transformed_img = resize_img(transformed_img)
-                aug_results.append(transformed_img)
-                aug_params.append(params)
-                cnt_per_line[i] += 1
+            # rot_offset = 0
+            #for rot_offset in [0, 90, 180, 270]:
+             #   print ("rotation", rot_offset, class_name)
+                while cnt_per_line[i] < MAX_DATA_AUG_PER_LINE:
+                    for rot_offset in [0, 90, 180, 270]:
+                         print ("rotation", rot_offset, class_name)
+                         affine_mat, params = make_affine_transform(rot_offset + MIN_ROT_DEG, rot_offset + MAX_ROT_DEG)
+                         rot_deg = np.random.uniform(rot_offset + MIN_ROT_DEG, rot_offset + MAX_ROT_DEG)
+                         transformed_img = imutils.rotate_bound(cropped_img, rot_deg)
+                         transformed_img = sktf.warp(transformed_img, affine_mat, mode='edge')
+                         transformed_img = resize_img(transformed_img)
+                         aug_results.append(transformed_img)
+                         aug_params.append(params)
+                         cnt_per_line[i] += 1
 
         # Save transformed images
         save_transformed_imgs(aug_results, annot, aug_params, i)

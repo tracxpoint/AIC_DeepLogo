@@ -19,7 +19,7 @@ MIN_EDGE_LOG = int(np.ceil(np.log(10.)/np.log(BASE_LOG)))
 MAX_EDGE_LOG = int(np.ceil(np.log(500.)/np.log(BASE_LOG)))
 EDGE_LOG_RANGE = MAX_EDGE_LOG - MIN_EDGE_LOG + 1
 NUM_WIN_PSZ = 130
-FilterTIG = ctypes.cdll.LoadLibrary('/home/hussam/mlmodels/DeepLogo/bing/filter_tig.so')
+FilterTIG = ctypes.cdll.LoadLibrary(os.getcwd() + '/bing/filter_tig.so')
 def magnitude(x,y):
     #return np.sqrt(np.square(x)+np.square(y))
     return x + y

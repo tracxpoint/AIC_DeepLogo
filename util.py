@@ -27,7 +27,7 @@ import numpy as np
 import selectivesearch
 import common
 import skimage.io
-from bing import bing
+#from bing import bing
 
 def parse_annot(annot):
     fn = annot[0].decode('utf-8')
@@ -64,6 +64,7 @@ def get_object_proposals(img, scale=500, sigma=0.9, min_size=10):
 
     return candidates
 
+'''
 def get_bing_object_proposals(img):
     if not os.path.exists(common.BING_RESULTS_PATH):
         print ("The results directory that should contains weights and sizes indeces does not exist. Be sure to have already performed training. ")
@@ -100,7 +101,7 @@ def get_bing_object_proposals(img):
         candidates.add(rect)
         # cv2.rectangle(image,(bb[0],bb[1]),(bb[2],bb[3]),color=(random.randint(0,255),random.randint(0,255),random.randint(0,255)))
     return candidates
-
+'''
 def load_target_image(img_fn):
     if common.CNN_IN_CH == 1:
         target_image = skimage.io.imread(img_fn, as_grey=True)

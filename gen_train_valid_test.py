@@ -34,10 +34,10 @@ PIXEL_DEPTH = 255.0
 PICKLE_FILENAME = 'deep_logo.pickle'
 
 #TRAIN_SIZE = 70000
-TRAIN_SIZE = 13000
-VALID_SIZE = 50
+TRAIN_SIZE = 32000
+VALID_SIZE = 10000
 #TEST_SIZE = 5000
-TEST_SIZE = 820
+TEST_SIZE = 5000
 
 
 def load_logo(data_dir):
@@ -115,7 +115,9 @@ def merge_datasets(pickle_files, train_size, valid_size=0):
                                               common.CNN_IN_CH)
     vsize_per_class = valid_size // num_classes
     tsize_per_class = train_size // num_classes
-
+    
+    print ("vsize per class",str(vsize_per_class))
+    print ("tsize per class",str(tsize_per_class))
     start_v, start_t = 0, 0
     end_v, end_t = vsize_per_class, tsize_per_class
     end_l = vsize_per_class + tsize_per_class
@@ -132,12 +134,15 @@ def merge_datasets(pickle_files, train_size, valid_size=0):
                     end_v += vsize_per_class
                 print("end_l", end_l)
                 print("end_t", end_t)
-                print("tsize_per_class", tsize_per_class)
+                print("label + file", label)
                 train_logo = logo_set[vsize_per_class:end_l, :, :, :]
                 train_dataset[start_t:end_t, :, :, :] = train_logo
+                print(train_dataset.shape)
                 train_labels[start_t:end_t] = label
                 start_t += tsize_per_class
                 end_t += tsize_per_class
+
+                
         except Exception as e:
             print('Unable to process data from', pickle_file, ':', e)
             raise
