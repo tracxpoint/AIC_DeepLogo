@@ -66,6 +66,7 @@ CNN_SHAPE = (CNN_IN_HEIGHT, CNN_IN_WIDTH, CNN_IN_CH)
 TRAIN_DIR = os.getenv('RETAIL25_PATH', '../Retail25')
 TRAIN_IMAGE_DIR = os.path.join(TRAIN_DIR, 'Images')
 CROPPED_AUG_IMAGE_DIR = '../DeepLogo/cropped_augmented_images'
+CROPPED_ONLY_IMAGE_DIR = '../DeepLogo/cropped_only_images'
 ANNOT_FILE = os.path.join(
     TRAIN_DIR, 'training_data_flat.txt')
 ANNOT_FILE_WITH_BG = os.path.join(TRAIN_DIR, 'train_annot_with_bg_class.txt')

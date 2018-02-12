@@ -41,7 +41,7 @@ def get_bg_proposals(object_proposals, img_instances_annot):
         global_bg = True
         for annot in img_instances_annot:
             annot_rect = util.get_annot_rect(annot)
-            if util.iou(obj_proposal, annot_rect) > 0.5:
+            if util.iou(obj_proposal, annot_rect) > 0.1:
                 global_bg = False
                 break
         if global_bg:
@@ -60,12 +60,12 @@ def gen_annot_file_lines(img_instances_annot):
 
     img_fn, class_name, train_subset_class = util.parse_annot(img_instances_annot[0])
     # Get original annot line
-    # for annot in img_instances_annot:
-    #     img_fn, class_name, train_subset_class = util.parse_annot(annot)
-    #     annot_rect = util.get_annot_rect(annot)
-    #     lines.append(
-    #         gen_annot_file_line(img_fn, class_name, train_subset_class,
-    #                             annot_rect))
+    for annot in img_instances_annot:
+        img_fn, class_name, train_subset_class = util.parse_annot(annot)
+        annot_rect = util.get_annot_rect(annot)
+        lines.append(
+            gen_annot_file_line(img_fn, class_name, train_subset_class,
+                                annot_rect))
 
     # Load image
     img = skimage.io.imread(os.path.join(common.TRAIN_IMAGE_DIR, img_fn))
@@ -95,9 +95,9 @@ def gen_annot_file_lines(img_instances_annot):
 
         img_fn, class_name, train_subset_class = util.parse_annot(annot)
         annot_rect = util.get_annot_rect(annot)
-        lines.append(
-            gen_annot_file_line(img_fn, class_name, train_subset_class,
-                                annot_rect))
+        # lines.append(
+        #     gen_annot_file_line(img_fn, class_name, train_subset_class,
+        #                         annot_rect))
         lines.append(
             gen_annot_file_line(img_fn, common.CLASS_NAME[-1], train_subset_class,
                                 [x1, y1, x2, y2]))
